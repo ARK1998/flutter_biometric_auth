@@ -94,30 +94,91 @@ class _BiometricPageState extends State<BiometricPage> {
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({super.key});
 
+  void _logout(BuildContext context) {
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BiometricPage()),
+                );
+              },
+              child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.check_circle, color: Colors.green, size: 100),
-            const SizedBox(height: 30),
-            const Text(
-              'Authentication Successful!',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.check_circle, color: Colors.green, size: 100),
+                const SizedBox(height: 30),
+                const Text(
+                  'Authentication Successful!',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'You have been logged in successfully',
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+          // Positioned logout button at the bottom
+          Positioned(
+            bottom: 40,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton.icon(
+                onPressed: () => _logout(context),
+                icon: const Icon(Icons.logout, size: 20),
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    side: BorderSide(color: Colors.red.shade300, width: 1.5),
+                  ),
+                  elevation: 3,
+                  shadowColor: Colors.red.withOpacity(0.3),
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              'You have been logged in successfully',
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
